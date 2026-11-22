@@ -1,22 +1,82 @@
-let{readFileSync:R,readdirSync:D,mkdirSync:M,writeFileSync:W}=require("node:fs")
-let I=process.env.MAKEFUN_INPUT_DIR??"/input",O=process.env.MAKEFUN_OUTPUT_DIR??"/output"
-Z={0:0,1:17,2:65,3:4,4:6,5:10,6:11,7:15,23:5,27:5,48:32,49:36,50:36,51:32,52:0,64:5,65:8,80:4,81:4,82:1,83:4}
-for(k=16;k<35;k++)Z[k]??=9
-c=y=>p[y-2]|p[y-1]<<8,g=y=>y+(c(y)<<16>>16)
-E=f=>b?(P(f()),void 0):4
-Q="return 0$P(p[y-1]<<24>>24)$P(p[y-4]|p[y-3]<<8|p[y-2]<<16|p[y-1]<<24)$$P(b,b)$P(b,a)$P(a,b,a)$P(a,b,S.pop())$$$$$$$$$P(a+b|0)$P(a-b|0)$P(Math.imul(a,b))$return E(()=>Math.trunc(a/b)|0)$return E(()=>a%b|0)$return E(()=>(a>>>0)/(b>>>0)|0)$return E(()=>(a>>>0)%(b>>>0)|0)$P(-b|0)$P(a&b)$P(a|b)$P(a^b)$P(~b)$P(a<<(b&31))$P(a>>(b&31))$P(a>>>(b&31)|0)$$P(+(a==b))$P(+(a<b))$P(+((a>>>0)<(b>>>0)))$$$$$$$$$$$$$$x=g(y)$b||(x=g(y))$b&&(x=g(y))$if(C.length>63)return 7;C.push(y);x=c(y)$if(!C.length)return 8;x=C.pop()$$$$$$$$$$$$if(b<0|b>255)return 6;P(m[b]|0)$if(b<0|b>255)return 6;m[b]=a$$$$$$$$$$$$$$$u=''+b;if(o.length+u.length>65536)return 11;o.push(...Buffer.from(u))$if(o.length>65535)return 11;o.push(b&255)$P(j<n.length?n[j++]:-1)$return b&255"
-H=Q.split("$").map(s=>new Function("u",s))
-function V(A,B){p=A;n=B;S=[];C=[];m=[];o=[];x=j=0;P=S.push.bind(S)
-for(k=0;;){if(++k>1e6)return[o,10]
-if(x<0|x>=p.length)return[o,9]
-z=Z[op=p[x]]
-if(z==null)return[o,5]
-l=z>>4
-if(x+1+l>p.length)return[o,9]
-t=z>>2&3
-if(S.length<t)return[o,2]
-if(S.length-t+(z&3)>256)return[o,3]
-y=x+1+l;x=y
-if(t)b=S.pop(),t>1&&(a=S.pop())
-if((r=H[op]())!=null)return[o,r]}}
-f=s=>R(I+"/"+id+"/"+s);for(id of D(I))try{[o,e]=V(f("program.bin"),f("input.bin"));M(O+"/"+id);W(O+"/"+id+"/stdout.bin",Buffer.from(o));W(O+"/"+id+"/exit.txt",e+"")}catch{}
+const fs=require('node:fs')
+const T={0:[0,0,0],1:[1,0,1],2:[4,0,1],3:[0,1,0],4:[0,1,2],5:[0,2,2],6:[0,2,3],7:[0,3,3],16:[0,2,1],17:[0,2,1],18:[0,2,1],19:[0,2,1],20:[0,2,1],21:[0,2,1],22:[0,2,1],23:[0,1,1],24:[0,2,1],25:[0,2,1],26:[0,2,1],27:[0,1,1],28:[0,2,1],29:[0,2,1],30:[0,2,1],32:[0,2,1],33:[0,2,1],34:[0,2,1],48:[2,0,0],49:[2,1,0],50:[2,1,0],51:[2,0,0],52:[0,0,0],64:[0,1,1],65:[0,2,0],80:[0,1,0],81:[0,1,0],82:[0,0,1],83:[0,1,0]}
+function RN(p,i){
+ let n=p.length,D=new Int32Array(256),sp=0,C=new Int32Array(64),cs=0,M=new Int32Array(256),o=new Uint8Array(65536),ol=0,ip=0,pc=0,s=0
+ const r=e=>[o.slice(0,ol),e]
+ for(;;){
+  if(s===1e6)return r(10)
+  if(pc<0||pc>=n)return r(9)
+  const op=p[pc],t=T[op]
+  if(!t)return r(5)
+  const [m,po,pu]=t
+  if(pc+m>=n)return r(9)
+  s++
+  const nx=pc+1+m
+  if(sp<po)return r(2)
+  if(sp-po+pu>256)return r(3)
+  pc=nx
+  switch(op){
+  case 0:return r(0);
+   case 1:D[sp++]=(p[nx-1]<<24)>>24;break
+   case 2:D[sp++]=p[nx-4]|p[nx-3]<<8|p[nx-2]<<16|p[nx-1]<<24;break
+   case 3:sp--;break
+   case 4:D[sp]=D[sp-1];sp++;break
+   case 5:{const x=D[sp-1];D[sp-1]=D[sp-2];D[sp-2]=x;break}
+   case 6:D[sp]=D[sp-2];sp++;break
+   case 7:{const x=D[sp-3];D[sp-3]=D[sp-2];D[sp-2]=D[sp-1];D[sp-1]=x;break}
+   case 23:D[sp-1]=-D[sp-1]|0;break
+   case 27:D[sp-1]=~D[sp-1];break
+   case 16:case 17:case 18:case 19:case 20:case 21:case 22:case 24:case 25:case 26:case 28:case 29:case 30:case 32:case 33:case 34:{
+    const b=D[sp-1],a=D[sp-2];let v
+    switch(op){
+     case 16:v=(a+b)|0;break
+     case 17:v=(a-b)|0;break
+     case 18:v=Math.imul(a,b);break
+     case 19:if(!b)return r(4);v=a===-2147483648&&b===-1?a:(a/b)|0;break
+     case 20:if(!b)return r(4);v=b===-1?0:a%b|0;break
+     case 21:if(!b)return r(4);v=Math.floor((a>>>0)/(b>>>0))|0;break
+     case 22:if(!b)return r(4);v=(a>>>0)%(b>>>0)|0;break
+     case 24:v=a&b;break
+     case 25:v=a|b;break
+     case 26:v=a^b;break
+     case 28:v=a<<(b&31);break
+     case 29:v=a>>(b&31);break
+     case 30:v=(a>>>(b&31))|0;break
+     case 32:v=a===b?1:0;break
+     case 33:v=a<b?1:0;break
+     case 34:v=a>>>0<b>>>0?1:0;break
+    }
+    sp-=2;D[sp++]=v;break
+   }
+   case 48:case 49:case 50:{
+    const rel=((p[nx-2]|p[nx-1]<<8)<<16)>>16;let take=true
+    if(op!==48){const v=D[--sp];take=op===49?v===0:v!==0}
+    if(take)pc=nx+rel;break
+   }
+   case 51:
+    if(cs===64)return r(7)
+    C[cs++]=nx;pc=p[nx-2]|p[nx-1]<<8;break
+   case 52:
+    if(!cs)return r(8)
+    pc=C[--cs];break
+   case 64:{const a=D[sp-1];if(a<0||a>=256)return r(6);D[sp-1]=M[a];break}
+   case 65:{const a=D[sp-1],v=D[sp-2];if(a<0||a>=256)return r(6);sp-=2;M[a]=v;break}
+   case 80:{const b=new TextEncoder().encode(String(D[sp-1]));if(ol+b.length>65536)return r(11);sp--;o.set(b,ol);ol+=b.length;break}
+   case 81:if(ol+1>65536)return r(11);o[ol++]=D[--sp]&255;break
+   case 82:D[sp++]=ip<i.length?i[ip++]:-1;break
+   case 83:return r(D[--sp]&255)
+  }
+ }
+}
+const din=process.env.MAKEFUN_INPUT_DIR||'/input',dout=process.env.MAKEFUN_OUTPUT_DIR||'/output'
+fs.mkdirSync(dout,{recursive:true})
+for(const e of fs.readdirSync(din,{withFileTypes:true})){
+ if(!e.isDirectory())continue
+ const id=e.name
+ try{
+  const [o,x]=RN(fs.readFileSync(din+'/'+id+'/program.bin'),fs.readFileSync(din+'/'+id+'/input.bin'))
+  fs.mkdirSync(dout+'/'+id,{recursive:true})
+  fs.writeFileSync(dout+'/'+id+'/stdout.bin',o)
+  fs.writeFileSync(dout+'/'+id+'/exit.txt',String(x))
+ }catch(_){}
+}
