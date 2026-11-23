@@ -1,6 +1,7 @@
 const fs=require('node:fs')
 const T={0:0,1:17,2:65,3:4,4:6,5:10,6:11,7:15,48:32,49:36,50:36,51:32,52:0,64:5,65:8,80:4,81:4,82:1,83:4}
 for(let i=16;i<35;i++)if(i!=31)T[i]=9;T[23]=T[27]=5
+const V={16:(a,b)=>a+b|0,17:(a,b)=>a-b|0,18:Math.imul,19:(a,b)=>b?a/b|0:null,20:(a,b)=>b?a%b|0:null,21:(a,b)=>b?(a>>>0)/(b>>>0)|0:null,22:(a,b)=>b?(a>>>0)%(b>>>0)|0:null,24:(a,b)=>a&b,25:(a,b)=>a|b,26:(a,b)=>a^b,28:(a,b)=>a<<(b&31),29:(a,b)=>a>>(b&31),30:(a,b)=>(a>>>(b&31))|0,32:(a,b)=>a===b?1:0,33:(a,b)=>a<b?1:0,34:(a,b)=>a>>>0<b>>>0?1:0}
 function RN(p,i){
  let n=p.length,D=new Int32Array(256),sp=0,C=new Int32Array(64),cs=0,M=new Int32Array(256),o=new Uint8Array(65536),ol=0,ip=0,pc=0,s=0
  const r=e=>[o.slice(0,ol),e]
@@ -28,26 +29,7 @@ function RN(p,i){
    case 23:D[sp-1]=-D[sp-1]|0;break
    case 27:D[sp-1]=~D[sp-1];break
    case 16:case 17:case 18:case 19:case 20:case 21:case 22:case 24:case 25:case 26:case 28:case 29:case 30:case 32:case 33:case 34:{
-    const b=D[sp-1],a=D[sp-2];let v
-    switch(op){
-     case 16:v=(a+b)|0;break
-     case 17:v=(a-b)|0;break
-     case 18:v=Math.imul(a,b);break
-     case 19:if(!b)return r(4);v=a===-2147483648&&b===-1?a:(a/b)|0;break
-     case 20:if(!b)return r(4);v=b===-1?0:a%b|0;break
-     case 21:if(!b)return r(4);v=Math.floor((a>>>0)/(b>>>0))|0;break
-     case 22:if(!b)return r(4);v=(a>>>0)%(b>>>0)|0;break
-     case 24:v=a&b;break
-     case 25:v=a|b;break
-     case 26:v=a^b;break
-     case 28:v=a<<(b&31);break
-     case 29:v=a>>(b&31);break
-     case 30:v=(a>>>(b&31))|0;break
-     case 32:v=a===b?1:0;break
-     case 33:v=a<b?1:0;break
-     case 34:v=a>>>0<b>>>0?1:0;break
-    }
-    sp-=2;D[sp++]=v;break
+    const b=D[sp-1],a=D[sp-2],v=V[op](a,b);if(v==null)return r(4);sp-=2;D[sp++]=v;break
    }
    case 48:case 49:case 50:{
     const rel=((p[nx-2]|p[nx-1]<<8)<<16)>>16;let take=true
