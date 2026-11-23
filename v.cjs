@@ -1,4 +1,4 @@
-const fs=require('node:fs')
+const{readFileSync:R,readdirSync:D,mkdirSync:M,writeFileSync:W}=require("node:fs")
 const T={0:0,1:17,2:65,3:4,4:6,5:10,6:11,7:15,48:32,49:36,50:36,51:32,52:0,64:5,65:8,80:4,81:4,82:1,83:4}
 for(let i=16;i<35;i++)if(i!=31)T[i]=9;T[23]=T[27]=5
 const V={16:(a,b)=>a+b|0,17:(a,b)=>a-b|0,18:Math.imul,19:(a,b)=>b?a/b|0:null,20:(a,b)=>b?a%b|0:null,21:(a,b)=>b?(a>>>0)/(b>>>0)|0:null,22:(a,b)=>b?(a>>>0)%(b>>>0)|0:null,24:(a,b)=>a&b,25:(a,b)=>a|b,26:(a,b)=>a^b,28:(a,b)=>a<<(b&31),29:(a,b)=>a>>(b&31),30:(a,b)=>(a>>>(b&31))|0,32:(a,b)=>a===b?1:0,33:(a,b)=>a<b?1:0,34:(a,b)=>a>>>0<b>>>0?1:0}
@@ -6,19 +6,17 @@ function RN(p,i){
  let n=p.length,D=new Int32Array(256),sp=0,C=new Int32Array(64),cs=0,M=new Int32Array(256),o=new Uint8Array(65536),ol=0,ip=0,pc=0,s=0
  const r=e=>[o.slice(0,ol),e]
  for(;;){
-  if(s===1e6)return r(10)
-  if(pc<0||pc>=n)return r(9)
+  if(s===1e6)return r(10);if(pc<0||pc>=n)return r(9)
   const op=p[pc],t=T[op]
   if(t==null)return r(5)
   const m=t>>4,po=t>>2&3,pu=t&3
   if(pc+m>=n)return r(9)
   s++
   const nx=pc+1+m
-  if(sp<po)return r(2)
-  if(sp-po+pu>256)return r(3)
+  if(sp<po)return r(2);if(sp-po+pu>256)return r(3)
   pc=nx
   switch(op){
-  case 0:return r(0);
+   case 0:return r(0);
    case 1:D[sp++]=(p[nx-1]<<24)>>24;break
    case 2:D[sp++]=p[nx-4]|p[nx-3]<<8|p[nx-2]<<16|p[nx-1]<<24;break
    case 3:sp--;break
@@ -52,14 +50,5 @@ function RN(p,i){
  }
 }
 const din=process.env.MAKEFUN_INPUT_DIR||'/input',dout=process.env.MAKEFUN_OUTPUT_DIR||'/output'
-fs.mkdirSync(dout,{recursive:true})
-for(const e of fs.readdirSync(din,{withFileTypes:true})){
- if(!e.isDirectory())continue
- const id=e.name
- try{
-  const [o,x]=RN(fs.readFileSync(din+'/'+id+'/program.bin'),fs.readFileSync(din+'/'+id+'/input.bin'))
-  fs.mkdirSync(dout+'/'+id,{recursive:true})
-  fs.writeFileSync(dout+'/'+id+'/stdout.bin',o)
-  fs.writeFileSync(dout+'/'+id+'/exit.txt',String(x))
- }catch(_){}
-}
+M(dout,{recursive:true})
+for(const id of D(din)){try{const [o,x]=RN(R(din+"/"+id+"/program.bin"),R(din+"/"+id+"/input.bin"));M(dout+"/"+id,{recursive:true});W(dout+"/"+id+"/stdout.bin",o);W(dout+"/"+id+"/exit.txt",String(x))}catch(_){}} 
